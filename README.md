@@ -1,6 +1,6 @@
 # Kruskal MST Visualizer
 
-An interactive visualizer for Kruskal 的最小生成树算法，使用 React、Vite 和 Tailwind CSS 构建。应用通过随机生成连通图，展示并查集 (Union-Find) 的合并过程，并以颜色和列表高亮的形式演示每一步的边选择。
+一个基于 React、Vite 与 Tailwind CSS 的 Kruskal 最小生成树算法可视化工具。应用会随机生成连通图，使用并查集 (Union-Find) 展示每条边的筛选与合并过程，并以颜色和列表高亮同步呈现当前状态。
 
 ## 开发与运行
 

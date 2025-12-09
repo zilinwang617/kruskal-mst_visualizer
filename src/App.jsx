@@ -125,8 +125,22 @@ export default function App() {
       }
     }
 
-    // 随机保留部分边，保证连通性同时便于演示筛选过程
-    const finalEdges = possibleEdges.filter(() => Math.random() > EDGE_KEEP_THRESHOLD);
+    const connectivityUf = new UnionFind(NODE_COUNT);
+    const connectorEdges = [];
+    const sortedPossible = [...possibleEdges].sort((a, b) => a.weight - b.weight);
+    sortedPossible.forEach((edge) => {
+      if (connectivityUf.union(edge.u, edge.v)) {
+        connectorEdges.push(edge);
+      }
+    });
+
+    // 随机保留部分额外边，保证连通性同时展示筛选过程
+    const randomEdges = possibleEdges.filter(() => Math.random() > EDGE_KEEP_THRESHOLD);
+    const finalEdgeMap = new Map();
+    [...connectorEdges, ...randomEdges].forEach((edge) => {
+      finalEdgeMap.set(edge.id, edge);
+    });
+    const finalEdges = Array.from(finalEdgeMap.values());
     const sorted = [...finalEdges].sort((a, b) => a.weight - b.weight);
 
     const initialColors = {};
@@ -307,7 +321,7 @@ export default function App() {
                 resetStates[e.id] = 'pending';
               });
               setEdgeStates(resetStates);
-              ufRef.current = new UnionFind(nodes.length);
+              ufRef.current = new UnionFind(NODE_COUNT);
               const resetColors = {};
               nodes.forEach((n, idx) => {
                 resetColors[n.id] = idx % SET_COLORS.length;
