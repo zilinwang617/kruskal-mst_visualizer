@@ -1,16 +1,19 @@
-# React + Vite
+# Kruskal MST Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive visualizer for Kruskal 的最小生成树算法，使用 React、Vite 和 Tailwind CSS 构建。应用通过随机生成连通图，展示并查集 (Union-Find) 的合并过程，并以颜色和列表高亮的形式演示每一步的边选择。
 
-Currently, two official plugins are available:
+## 开发与运行
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev      # 开发模式，默认端口 5173
+npm run build    # 生产构建
+npm run lint     # 代码检查
+```
 
-## React Compiler
+## 主要功能
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 随机生成节点与边，并按权重排序展示。
+- 单步或自动播放 Kruskal 算法过程，实时更新最小生成树权重。
+- 使用颜色区分并查集集合，列表与画布同步高亮当前扫描/接受/拒绝的边。
+- 支持重新生成图或重置当前算法状态。

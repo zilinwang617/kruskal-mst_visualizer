@@ -19,6 +19,7 @@ const SET_COLORS = [
 
 const GRAPH_READY_MESSAGE = '图已生成。边已按权重排序。';
 const NODE_MARGIN = 50;
+const MIN_NODE_DISTANCE = 80;
 const EDGE_DISTANCE_LIMIT = 350;
 const WEIGHT_SCALE_FACTOR = 5;
 const EDGE_KEEP_THRESHOLD = 0.3;
@@ -98,13 +99,11 @@ export default function App() {
       let x;
       let y;
       let tooClose;
-      let attempts = 0;
       do {
         x = NODE_MARGIN + Math.random() * (width - NODE_MARGIN * 2);
         y = NODE_MARGIN + Math.random() * (height - NODE_MARGIN * 2);
-        tooClose = newNodes.some((n) => distance(n, { x, y }) < 80);
-        attempts += 1;
-      } while (tooClose && attempts < 100);
+        tooClose = newNodes.some((n) => distance(n, { x, y }) < MIN_NODE_DISTANCE);
+      } while (tooClose);
       newNodes.push({ id: i, x, y });
     }
 
