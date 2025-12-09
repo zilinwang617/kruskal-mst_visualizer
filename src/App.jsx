@@ -28,6 +28,7 @@ const MIN_NODE_DISTANCE = 80;
 const EDGE_DISTANCE_LIMIT = 350;
 const WEIGHT_SCALE_FACTOR = 5;
 const EDGE_KEEP_THRESHOLD = 0.3;
+const SVG_VIEWBOX = `0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`;
 
 const distance = (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 
@@ -97,7 +98,7 @@ export default function App() {
   const buildGraph = useCallback(() => {
     const newNodes = [];
 
-    for (let i = 0; i < NODE_COUNT; i += 1) {
+    for (let i = 0; i < NODE_COUNT; i++) {
       let x;
       let y;
       let tooClose;
@@ -110,8 +111,8 @@ export default function App() {
     }
 
     const possibleEdges = [];
-    for (let i = 0; i < NODE_COUNT; i += 1) {
-      for (let j = i + 1; j < NODE_COUNT; j += 1) {
+    for (let i = 0; i < NODE_COUNT; i++) {
+      for (let j = i + 1; j < NODE_COUNT; j++) {
         const dist = Math.floor(distance(newNodes[i], newNodes[j]));
         if (dist < EDGE_DISTANCE_LIMIT) {
           possibleEdges.push({
@@ -369,7 +370,7 @@ export default function App() {
             <span>{statusMessage}</span>
           </div>
 
-          <svg width="100%" height="100%" viewBox={`0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`} preserveAspectRatio="xMidYMid meet" className="max-w-full max-h-full">
+          <svg width="100%" height="100%" viewBox={SVG_VIEWBOX} preserveAspectRatio="xMidYMid meet" className="max-w-full max-h-full">
             {edges.map((edge) => {
               const u = nodes[edge.u];
               const v = nodes[edge.v];
