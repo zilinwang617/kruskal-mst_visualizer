@@ -18,6 +18,10 @@ const SET_COLORS = [
 ];
 
 const GRAPH_READY_MESSAGE = '图已生成。边已按权重排序。';
+const NODE_MARGIN = 50;
+const EDGE_DISTANCE_LIMIT = 350;
+const WEIGHT_SCALE_FACTOR = 5;
+const EDGE_KEEP_THRESHOLD = 0.3;
 
 const distance = (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 
@@ -96,8 +100,8 @@ export default function App() {
       let tooClose;
       let attempts = 0;
       do {
-        x = 50 + Math.random() * (width - 100);
-        y = 50 + Math.random() * (height - 100);
+        x = NODE_MARGIN + Math.random() * (width - NODE_MARGIN * 2);
+        y = NODE_MARGIN + Math.random() * (height - NODE_MARGIN * 2);
         tooClose = newNodes.some((n) => distance(n, { x, y }) < 80);
         attempts += 1;
       } while (tooClose && attempts < 100);
@@ -108,18 +112,18 @@ export default function App() {
     for (let i = 0; i < nodeCount; i += 1) {
       for (let j = i + 1; j < nodeCount; j += 1) {
         const dist = Math.floor(distance(newNodes[i], newNodes[j]));
-        if (dist < 350) {
+        if (dist < EDGE_DISTANCE_LIMIT) {
           possibleEdges.push({
             id: `${i}-${j}`,
             u: i,
             v: j,
-            weight: Math.floor(dist / 5),
+            weight: Math.floor(dist / WEIGHT_SCALE_FACTOR),
           });
         }
       }
     }
 
-    const finalEdges = possibleEdges.filter(() => Math.random() > 0.3);
+    const finalEdges = possibleEdges.filter(() => Math.random() > EDGE_KEEP_THRESHOLD);
     const sorted = [...finalEdges].sort((a, b) => a.weight - b.weight);
 
     const initialColors = {};
