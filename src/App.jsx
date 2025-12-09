@@ -18,6 +18,11 @@ const SET_COLORS = [
 ];
 
 const GRAPH_READY_MESSAGE = '图已生成。边已按权重排序。';
+const STATUS_COMPLETE_MESSAGE = '算法完成！最小生成树已构建。';
+const STATUS_RESET_MESSAGE = '已重置状态';
+const GRAPH_WIDTH = 800;
+const GRAPH_HEIGHT = 500;
+const NODE_COUNT = 12;
 const NODE_MARGIN = 50;
 const MIN_NODE_DISTANCE = 80;
 const EDGE_DISTANCE_LIMIT = 350;
@@ -90,26 +95,23 @@ const EdgeListItem = ({ edge, isCurrent, state }) => {
 
 export default function App() {
   const buildGraph = useCallback(() => {
-    const width = 800;
-    const height = 500;
-    const nodeCount = 12;
     const newNodes = [];
 
-    for (let i = 0; i < nodeCount; i += 1) {
+    for (let i = 0; i < NODE_COUNT; i += 1) {
       let x;
       let y;
       let tooClose;
       do {
-        x = NODE_MARGIN + Math.random() * (width - NODE_MARGIN * 2);
-        y = NODE_MARGIN + Math.random() * (height - NODE_MARGIN * 2);
+        x = NODE_MARGIN + Math.random() * (GRAPH_WIDTH - NODE_MARGIN * 2);
+        y = NODE_MARGIN + Math.random() * (GRAPH_HEIGHT - NODE_MARGIN * 2);
         tooClose = newNodes.some((n) => distance(n, { x, y }) < MIN_NODE_DISTANCE);
       } while (tooClose);
       newNodes.push({ id: i, x, y });
     }
 
     const possibleEdges = [];
-    for (let i = 0; i < nodeCount; i += 1) {
-      for (let j = i + 1; j < nodeCount; j += 1) {
+    for (let i = 0; i < NODE_COUNT; i += 1) {
+      for (let j = i + 1; j < NODE_COUNT; j += 1) {
         const dist = Math.floor(distance(newNodes[i], newNodes[j]));
         if (dist < EDGE_DISTANCE_LIMIT) {
           possibleEdges.push({
@@ -122,6 +124,7 @@ export default function App() {
       }
     }
 
+    // 随机保留部分边，保证连通性同时便于演示筛选过程
     const finalEdges = possibleEdges.filter(() => Math.random() > EDGE_KEEP_THRESHOLD);
     const sorted = [...finalEdges].sort((a, b) => a.weight - b.weight);
 
@@ -141,7 +144,7 @@ export default function App() {
       sortedEdges: sorted,
       nodeSetColors: initialColors,
       edgeStates: initialEdgeStates,
-      uf: new UnionFind(nodeCount),
+      uf: new UnionFind(NODE_COUNT),
     };
   }, []);
 
@@ -177,7 +180,7 @@ export default function App() {
   const nextStep = useCallback(() => {
     if (currentStep >= sortedEdges.length - 1) {
       setIsPlaying(false);
-      setStatusMessage('算法完成！最小生成树已构建。');
+      setStatusMessage(STATUS_COMPLETE_MESSAGE);
       return;
     }
 
@@ -309,7 +312,7 @@ export default function App() {
                 resetColors[n.id] = idx % SET_COLORS.length;
               });
               setNodeSetColors(resetColors);
-              setStatusMessage('已重置状态');
+              setStatusMessage(STATUS_RESET_MESSAGE);
             }}
             className="p-2 hover:bg-slate-100 rounded-md text-slate-600"
             title="重置算法"
@@ -366,7 +369,7 @@ export default function App() {
             <span>{statusMessage}</span>
           </div>
 
-          <svg width="100%" height="100%" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" className="max-w-full max-h-full">
+          <svg width="100%" height="100%" viewBox={`0 0 ${GRAPH_WIDTH} ${GRAPH_HEIGHT}`} preserveAspectRatio="xMidYMid meet" className="max-w-full max-h-full">
             {edges.map((edge) => {
               const u = nodes[edge.u];
               const v = nodes[edge.v];
