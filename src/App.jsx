@@ -370,6 +370,11 @@ export default function App() {
             {edges.map((edge) => {
               const u = nodes[edge.u];
               const v = nodes[edge.v];
+              if (!u || !v) {
+                return null;
+              }
+              const midX = (u.x + v.x) / 2;
+              const midY = (u.y + v.y) / 2;
               const state = edgeStates[edge.id] || 'pending';
               const isScanning = sortedEdges[currentStep]?.id === edge.id;
               const displayState = isScanning ? 'scanning' : state;
@@ -377,10 +382,10 @@ export default function App() {
               return (
                 <g key={edge.id}>
                   <line
-                    x1={u?.x}
-                    y1={u?.y}
-                    x2={v?.x}
-                    y2={v?.y}
+                    x1={u.x}
+                    y1={u.y}
+                    x2={v.x}
+                    y2={v.y}
                     stroke={getEdgeColor(displayState)}
                     strokeWidth={getEdgeWidth(displayState)}
                     strokeOpacity={getEdgeOpacity(displayState)}
@@ -388,8 +393,8 @@ export default function App() {
                     className="edge-transition"
                   />
                   <rect
-                    x={((u?.x ?? 0) + (v?.x ?? 0)) / 2 - 10}
-                    y={((u?.y ?? 0) + (v?.y ?? 0)) / 2 - 8}
+                    x={midX - 10}
+                    y={midY - 8}
                     width="20"
                     height="16"
                     fill="white"
@@ -397,8 +402,8 @@ export default function App() {
                     rx="4"
                   />
                   <text
-                    x={((u?.x ?? 0) + (v?.x ?? 0)) / 2}
-                    y={((u?.y ?? 0) + (v?.y ?? 0)) / 2 + 4}
+                    x={midX}
+                    y={midY + 4}
                     textAnchor="middle"
                     fontSize="11"
                     fontWeight="bold"
