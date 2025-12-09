@@ -35,6 +35,7 @@ const distance = (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 class UnionFind {
   constructor(size) {
     this.parent = Array.from({ length: size }, (_, i) => i);
+    this.rank = Array.from({ length: size }, () => 0);
   }
 
   find(i) {
@@ -47,7 +48,14 @@ class UnionFind {
     const rootI = this.find(i);
     const rootJ = this.find(j);
     if (rootI !== rootJ) {
-      this.parent[rootI] = rootJ;
+      if (this.rank[rootI] < this.rank[rootJ]) {
+        this.parent[rootI] = rootJ;
+      } else if (this.rank[rootI] > this.rank[rootJ]) {
+        this.parent[rootJ] = rootI;
+      } else {
+        this.parent[rootJ] = rootI;
+        this.rank[rootI] += 1;
+      }
       return true;
     }
     return false;
